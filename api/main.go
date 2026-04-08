@@ -36,6 +36,7 @@ func (lw *logWriter) Write(p []byte) (int, error) {
 }
 
 func main() {
+	fmt.Fprintln(os.Stderr, "=== API STARTING ===")
 	log.SetFlags(0)
 	log.SetOutput(&logWriter{})
 
