@@ -110,8 +110,8 @@ export class Runner {
       } else {
         await this.api.updateJobStatus(job.job_id, "completed", totalLeads);
       }
-    } catch (err) {
-      const msg = err instanceof Error ? err.message : String(err);
+    } catch (err: any) {
+      const msg = err?.response?.data?.error || err?.message || String(err);
       log.error("job failed", { job_id: job.job_id, error: msg });
       await this.api
         .updateJobStatus(job.job_id, "failed", totalLeads, msg)
