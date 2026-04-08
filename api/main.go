@@ -54,11 +54,17 @@ func main() {
 	helper.TuneMemory(cfg.MemoryLimitMB)
 
 	// Init Postgres
-	postgress.Init(cfg.DBUrl, cfg.DBTimeout)
-	postgress.MigrateFS(ctx, migrationFS, "database/migrations")
+	if err := postgress.Init(cfg.DBUrl, cfg.DBTimeout); err != nil {
+		log.Fatalf("ERROR [api] - postgres init failed error=%s", err)
+	}
+	if err := postgress.MigrateFS(ctx, migrationFS, "database/migrations"); err != nil {
+		log.Fatalf("ERROR [api] - migration failed error=%s", err)
+	}
 
 	// Init Redis
-	redis.InitCache(cfg.RedisName, cfg.RedisHost, cfg.RedisPort)
+	if err := redis.InitCache(cfg.RedisName, cfg.RedisHost, cfg.RedisPort); err != nil {
+		log.Fatalf("ERROR [api] - redis init failed error=%s", err)
+	}
 
 	// Init JWT
 	if err := jwt.Init(); err != nil {

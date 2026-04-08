@@ -20,5 +20,5 @@ RUN CGO_ENABLED=0 \
 FROM gcr.io/distroless/static-debian12
 WORKDIR /app
 COPY --from=builder /app/app /app/app
-EXPOSE 8080
+EXPOSE 3038
 CMD ["/app/app"]
