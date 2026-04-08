@@ -39,7 +39,8 @@ RUN npm ci --omit=dev --ignore-scripts
 COPY --from=builder /app/dist dist/
 
 # Non-root user for security
-RUN groupadd -r scraper && useradd -r -g scraper scraper
+RUN groupadd -r scraper && useradd -r -g scraper -m scraper \
+    && mkdir -p /tmp/.chromium && chown -R scraper:scraper /tmp/.chromium
 USER scraper
 
 CMD ["node", "dist/index.js"]
