@@ -50,12 +50,10 @@ func New(cfg config.Config, authH *handler.AuthHandler, leadH *handler.LeadHandl
 		OpenDuration:     time.Duration(cfg.CBOpenDurationSec) * time.Second,
 	})
 
-	// Middleware stack (inside → outside): mux → compress → cors → logger → rate limiter → circuit breaker
-	// Circuit breaker is outermost so it trips BEFORE requests pile up behind rate limiter
+	// Middleware stack (inside → outside): mux → compress → cors → rate limiter → circuit breaker
 	var h http.Handler = mux
 	h = middleware.Compress(h)
 	h = cors(h)
-	h = http.HandlerFunc(middleware.Logger(h.ServeHTTP))
 	h = limiter.LimitHandler(h)
 	h = cb.Wrap(h)
 

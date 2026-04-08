@@ -4,7 +4,7 @@ go 1.26.1
 
 require (
 	github.com/google/uuid v1.6.0
-	github.com/shivanand-burli/go-starter-kit v0.2.3
+	github.com/shivanand-burli/go-starter-kit v0.2.4
 )
 
 require (

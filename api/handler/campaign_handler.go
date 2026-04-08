@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 
@@ -55,7 +56,7 @@ func (h *CampaignHandler) CreateCampaign(w http.ResponseWriter, r *http.Request)
 	campaign, err := h.campaignSvc.Create(r.Context(), c)
 	if err != nil {
 		log.Printf("ERROR [campaign] - create failed error=%s", err)
-		helper.Error(w, http.StatusInternalServerError, "failed to create campaign")
+		helper.Error(w, http.StatusInternalServerError, fmt.Sprintf("create: %s", err))
 		return
 	}
 
