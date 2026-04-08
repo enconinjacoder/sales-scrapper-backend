@@ -54,7 +54,7 @@ export class Runner {
     while (this.running) {
       try {
         // BLPOP blocks until a job is available (30s timeout then re-loop)
-        const result = await this.redis.blpop("scrape_queue", 30);
+        const result = await this.redis.blpop(`${config.redisPrefix}:scrape_queue`, 30);
         if (!result) continue; // timeout, re-loop
 
         const [, payload] = result;

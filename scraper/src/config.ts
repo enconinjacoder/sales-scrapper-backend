@@ -15,6 +15,7 @@ export const config = {
   redisUrl: env("REDIS_URL", ""),
   redisHost: env("REDIS_HOST", "localhost"),
   redisPort: envInt("REDIS_PORT", 6379),
+  redisPrefix: env("REDIS_PREFIX", "sales"),
 
   concurrency: envInt("CONCURRENCY", 2),
   jobTimeoutMs: envInt("JOB_TIMEOUT_MS", 480_000), // 8 min
