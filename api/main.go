@@ -54,25 +54,31 @@ func main() {
 
 	cfg := config.Load()
 	ctx := context.Background()
+	fmt.Fprintln(os.Stderr, "=== CONFIG LOADED ===")
 
 	if cfg.ServicePass == "" || cfg.AdminPass == "" {
 		fatal("ERROR [api] - SERVICE_PASS and ADMIN_PASS must be set")
 	}
 
 	helper.TuneMemory(cfg.MemoryLimitMB)
+	fmt.Fprintln(os.Stderr, "=== MEMORY TUNED ===")
 
 	// Init Postgres
 	if err := postgress.Init(cfg.DBUrl, cfg.DBTimeout); err != nil {
 		fatal("ERROR [api] - postgres init failed error=%s", err)
 	}
+	fmt.Fprintln(os.Stderr, "=== POSTGRES OK ===")
+
 	if err := postgress.MigrateFS(ctx, migrationFS, "database/migrations"); err != nil {
 		fatal("ERROR [api] - migration failed error=%s", err)
 	}
+	fmt.Fprintln(os.Stderr, "=== MIGRATIONS OK ===")
 
 	// Init Redis
 	if err := redis.InitCache(cfg.RedisName, cfg.RedisHost, cfg.RedisPort); err != nil {
 		fatal("ERROR [api] - redis init failed error=%s", err)
 	}
+	fmt.Fprintln(os.Stderr, "=== REDIS OK ===")
 
 	// Init JWT
 	if err := jwt.Init(); err != nil {
