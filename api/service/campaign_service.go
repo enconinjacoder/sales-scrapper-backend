@@ -67,12 +67,13 @@ func (s *CampaignService) Create(ctx context.Context, c models.Campaign) (*model
 	// Enqueue jobs to Redis for Node.js scraper to pick up
 	queuePayloads := make([]string, len(jobs))
 	for i, j := range jobs {
-		b, err := json.Marshal(map[string]string{
-			"campaign_id": c.ID,
-			"job_id":      j.ID,
-			"source":      j.Source,
-			"city":        j.City,
-			"category":    j.Category,
+		b, err := json.Marshal(map[string]any{
+			"campaign_id":    c.ID,
+			"job_id":         j.ID,
+			"source":         j.Source,
+			"city":           j.City,
+			"category":       j.Category,
+			"drop_no_contact": c.DropNoContact,
 		})
 		if err != nil {
 			return nil, fmt.Errorf("marshal job payload: %w", err)

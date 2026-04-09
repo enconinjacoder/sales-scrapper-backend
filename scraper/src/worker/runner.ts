@@ -11,6 +11,8 @@ import { NewDomainsScraper } from "../scrapers/new-domains.js";
 import { RedditScraper } from "../scrapers/reddit.js";
 import { CustomUrlsScraper } from "../scrapers/custom-urls.js";
 import { WebCrawlerScraper } from "../crawler/crawler.js";
+import { LinkedInScraper } from "../scrapers/linkedin.js";
+import { JustDialScraper } from "../scrapers/justdial.js";
 import { log } from "../utils/logger.js";
 
 /** Scraper dispatch map — add new sources here. */
@@ -23,6 +25,8 @@ const scraperMap: Record<string, BaseScraper> = {
   reddit: new RedditScraper(),
   custom_urls: new CustomUrlsScraper(),
   web_crawler: new WebCrawlerScraper(),
+  linkedin: new LinkedInScraper(),
+  justdial: new JustDialScraper(),
 };
 
 export class Runner {
@@ -100,8 +104,14 @@ export class Runner {
       await this.pushStatus(job.job_id, "in_progress", 0);
 
       // Run the scraper — it yields batches of leads
-      for await (const batch of scraper.scrape(job, controller.signal)) {
+      for await (const rawBatch of scraper.scrape(job, controller.signal)) {
         if (controller.signal.aborted) break;
+
+        // Drop leads without both phone and email if configured
+        const batch = job.drop_no_contact
+          ? rawBatch.filter((l) => l.phone || l.email)
+          : rawBatch;
+        if (batch.length === 0) continue;
 
         // Push leads to Redis queue for Go to process
         const payload = JSON.stringify({ job_id: job.job_id, leads: batch });

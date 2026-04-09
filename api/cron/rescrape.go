@@ -57,12 +57,13 @@ func (rs *Rescrape) Run(ctx context.Context) {
 
 		queuePayloads := make([]string, len(jobs))
 		for i, j := range jobs {
-			b, err := json.Marshal(map[string]string{
-				"campaign_id": c.ID,
-				"job_id":      j.ID,
-				"source":      j.Source,
-				"city":        j.City,
-				"category":    j.Category,
+			b, err := json.Marshal(map[string]any{
+				"campaign_id":     c.ID,
+				"job_id":          j.ID,
+				"source":          j.Source,
+				"city":            j.City,
+				"category":        j.Category,
+				"drop_no_contact": c.DropNoContact,
 			})
 			if err != nil {
 				log.Printf("ERROR [rescrape] - marshal job payload failed campaign_id=%s error=%s", c.ID, err)

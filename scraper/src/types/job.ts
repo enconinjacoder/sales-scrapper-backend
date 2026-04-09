@@ -6,4 +6,5 @@ export interface ScrapeJob {
   city: string;
   category: string;
   urls?: string[];
+  drop_no_contact?: boolean;
 }
